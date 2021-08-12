@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from termcolor import colored
 from unicodedata import normalize
 from string import ascii_uppercase
+import requests
 import os
 import re
 

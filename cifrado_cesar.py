@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from termcolor import colored
 from unicodedata import normalize
 from string import ascii_uppercase
+import doctest
 import requests
 import os
 import re
@@ -139,6 +140,5 @@ def scrap(texto_busqueda):
 
 
 if __name__ == '__main__':
-    import doctest
     doctest.testmod()
     main()

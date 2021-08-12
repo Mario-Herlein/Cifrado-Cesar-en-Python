@@ -1,11 +1,18 @@
-from bs4 import BeautifulSoup
-from termcolor import colored
-from unicodedata import normalize
-from string import ascii_uppercase
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Aug 12 19:55:07 2021
+
+@author: Mario Herlein
+"""
+
 import doctest
 import requests
 import os
 import re
+from bs4 import BeautifulSoup
+from termcolor import colored
+from unicodedata import normalize
+from string import ascii_uppercase
 
 clearConsole = lambda: os.system('cls' if os.name in ('nt', 'dos') else 'clear')
 clearConsole()

@@ -4,11 +4,10 @@ Created on Thu Aug 12 19:55:07 2021
 
 @author: Mario Herlein
 """
-
-import doctest
-import requests
 import os
 import re
+import doctest
+import requests
 from bs4 import BeautifulSoup
 from termcolor import colored
 from unicodedata import normalize
@@ -53,8 +52,19 @@ def normalizar(texto):
     s = normalize( 'NFC', s)
     return s
 
-      
+        
+def checkclave():
+    """Verifica que haya ingresado un número y que el mismo se encuentre dentro del rango válido"""
+    clave = (input("\nClave de cifrado [1-26]: "))
+    while  not clave.isnumeric() or not 1<=int(clave)<=26:
+        clave=(input(f"\n'{clave}', no es una opción válida, intente ingresar un valor entre 1 y 26: "))
+    clave=int(clave)
+    return clave
+
+       
 def cifrar(msj, clave, mode):
+    """Se encarga de cifrar o decifrar cuando se cuenta con la clave para el mismo, crea para esto
+    una lista con el abecedario en mayúsculas y le agrega la ñ"""
     abc=list(ascii_uppercase)
     abc.insert(14,"Ñ")
     msj = msj.upper()
@@ -75,6 +85,8 @@ def cifrar(msj, clave, mode):
 
 
 def descifrar(msj):
+    """Se encarga del descifrado para las opciones sin clave y llama a la funcion descifrar 
+    para la opción con clave"""
     encontrados=0
     while True:
         tiene_clave=input("\n¿Tiene la clave de descifrado?[Y/N]: ")
@@ -117,12 +129,9 @@ def descifrar(msj):
             print("Opción incorrecta, intente nuevamente.")
 
 
-def checkclave():
-    clave = (input("\nClave de cifrado [1-26]: "))
-    while  not clave.isnumeric() or not 1<=int(clave)<=26:
-        clave=(input(f"\n'{clave}', no es una opción válida, intente ingresar un valor entre 1 y 26: "))
-    clave=int(clave)
-    return clavedef obtener_resultados(termino_busqueda):
+def obtener_resultados(termino_busqueda):
+    """Ingresa a la web del diccionario y busca la palabra generada en el descifrado,
+    devuelve un texto de la web generada en la busqueda de la palabra"""
     url = f'https://www.wordreference.com/definicion/{termino_busqueda}'
     USER_AGENT = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36'}
     respuesta = requests.get(url, headers=USER_AGENT)
@@ -131,19 +140,24 @@ def checkclave():
 
 
 def procesar_resultados(html):
-	soup = BeautifulSoup(html, 'html.parser')
-	resultados_encontrados = []
-	bloque = soup.find_all("div", class_="trans clickable")
-	for resultado in bloque:
-		titulo = resultado.find('h3')
-		resultados_encontrados.append(titulo)
-	return resultados_encontrados
-
+    """Procesa un texto devuelto de la busqueda en el diccionario y extrae el tags h3 si lo tiene, 
+    que indicaría que la palabra buscada existe en el diccionario, devolviendo 
+    una lista con todos los encontrados"""
+    soup = BeautifulSoup(html, 'html.parser')
+    resultados_encontrados = []
+    bloque = soup.find_all("div", class_="trans clickable")
+    for resultado in bloque:
+        titulo = resultado.find('h3')
+        resultados_encontrados.append(titulo)
+    return resultados_encontrados
+	
 
 def scrap(texto_busqueda):
-	html = obtener_resultados(texto_busqueda)
-	resultados = procesar_resultados(html)
-	return len(resultados)
+    """Realiza un web scraping usando un texto como referencia devuelve la cantidad 
+    de resultados obtenidos"""
+    html=obtener_resultados(texto_busqueda)
+    resultados = procesar_resultados(html)
+    return len(resultados)
 
 
 if __name__ == '__main__':
